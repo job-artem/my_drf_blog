@@ -6,7 +6,6 @@ from taggit.managers import TaggableManager
 from django.contrib.auth.models import User
 
 
-
 class Post(models.Model):
     h1 = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
