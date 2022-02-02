@@ -41,6 +41,12 @@ class TagView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
 
 
+class AsideView(generics.ListAPIView):
+    queryset = Post.objects.all().order_by('-id')[:5]
+    serializer_class = PostSerializer
+    permission_classes = [permissions.AllowAny]
+
+
 # тестовое учебное апи
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
