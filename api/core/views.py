@@ -7,7 +7,7 @@ from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 
-from .serializers import PostSerializer, UserSerializer, TagSerializer, ContactSerailizer
+from .serializers import PostSerializer, UserSerializer, TagSerializer, ContactSerailizer, CommentSerializer
 from .models import Post
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -88,7 +88,7 @@ class RegisterView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
 
-    def post(self, request, *args,  **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -96,6 +96,34 @@ class RegisterView(generics.GenericAPIView):
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "message": "Пользователь успешно создан",
         })
+
+
+class ProfileView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            "user": UserSerializer(request.user, context=self.get_serializer_context()).data,
+        })
+
+
+
+from .models import Comment
+
+
+class CommentView(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        post_slug = self.kwargs['post_slug'].lower()
+        post = Post.objects.get(slug=post_slug)
+        return Comment.objects.filter(post=post)
+
+
+
 
 # class FeedBackView(View):
 #     def get(self, request, *args, **kwargs):
