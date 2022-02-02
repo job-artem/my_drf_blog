@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import pagination
 from taggit.models import Tag
+from .serializers import RegisterSerializer, UserSerializer
 
 
 class PageNumberSetPagination(pagination.PageNumberPagination):
@@ -81,6 +82,20 @@ class FeedBackView(APIView):
             message = data.get('message')
             send_mail(f'От {name} | {subject}', message, from_email, ['amromashov@gmail.com'])
             return Response({"success": "Sent"})
+
+
+class RegisterView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args,  **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "message": "Пользователь успешно создан",
+        })
 
 # class FeedBackView(View):
 #     def get(self, request, *args, **kwargs):
