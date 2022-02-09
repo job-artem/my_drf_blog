@@ -17,7 +17,7 @@ from .serializers import RegisterSerializer, UserSerializer
 
 
 class PageNumberSetPagination(pagination.PageNumberPagination):
-    page_size = 2
+    page_size = 6
     page_size_query_param = 'page_size'
     ordering = 'created_at'
 
@@ -80,7 +80,7 @@ class FeedBackView(APIView):
             from_email = data.get('email')
             subject = data.get('subject')
             message = data.get('message')
-            send_mail(f'От {name} | {subject}', message, from_email, ['amromashov@gmail.com'])
+            send_mail(f'От {name} | {subject}', message, from_email, ['job.artem.2019@gmail.com'])
             return Response({"success": "Sent"})
 
 
