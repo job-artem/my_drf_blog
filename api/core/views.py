@@ -119,6 +119,7 @@ class CommentView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         post_slug = self.kwargs['post_slug'].lower()
+        print(post_slug)
         post = Post.objects.get(slug=post_slug)
         return Comment.objects.filter(post=post)
 
